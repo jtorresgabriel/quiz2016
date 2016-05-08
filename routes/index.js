@@ -10,7 +10,8 @@ router.get('/autor', function(req, res) {
   res.render('autor');
 });
 
-//router.param('quizId', quizController.load);
+//Autoload de rutas que usen: quizId
+router.param('quizId', quizController.load);
 
 router.get('/quizzes', quizController.index);
 router.get('/quizzes/:quizId(\\d+)', quizController.show);
