@@ -20,6 +20,13 @@ exports.index = function (req, res, next) {
 	.catch(function(error) {next(error);
 });
 };
+
+//GET/ quiezzes/new
+exports.new =  function(req, res, next){
+	var quiz = models.Quiz.build({question: "", answer: ""});
+	res.render('quizzes/new', {quiz: quiz});
+};
+
 //GET /quizzes/:id
 exports.show = function (req, res, next) {
 				
@@ -37,4 +44,17 @@ exports.check = function(req, res, next){
 	
 	res.render('quizzes/result', {quiz: req.quiz, result: result, answer: answer});
 
+};
+
+//POST /quizzes/create
+exports.create = function (req, res,next) {
+	var quiz = modesls.Quiz.build({question: req.body.quiz.question,
+									answer: req.body.quiz.answer } );
+
+//guarda en DB los campos pregunta y respuesta de quiz
+quiz.save({fields: ["question", "answer"]}).then(function(quiz){
+	res.redirect('/quizzes');
+})
+.catch(function(error) {next(error);
+	});
 };
