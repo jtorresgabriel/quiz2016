@@ -1,15 +1,8 @@
-<!DOCTYPE html>
-<html>
-  <head>
-  	<meta charset="utf-8">
-    <title> Quiz 2016 </title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    
-    	<form method ="get" action="/check">
-    	 <p> La respuesta <strong> <%= answer%>  </strong> es <%= result%>  </p>
-    	 <p> <a href= "/question?answer = <%= answer%>"> Inténtelo otra vez </a>
+  
+    	 <p> 
+    	 	La respuesta <strong> <%= answer%>  </strong> es <%= result%>  
+    	 </p>
 
-  </body>
-</html>
+    	 <p>
+    	  <a href= "/quizzes/<%= quiz.id %>?answer=<%= answer%>"> Inténtelo otra vez </a>
+    	</p>
