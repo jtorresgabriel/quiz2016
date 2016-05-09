@@ -1,4 +1,5 @@
-var models = require ('../models')
+var models = require ('../models');
+var Sequelize = require('sequelize');
 
 //autoaload
 exports.load = function (req, res, next, quizId) {
@@ -47,14 +48,44 @@ exports.check = function(req, res, next){
 };
 
 //POST /quizzes/create
-exports.create = function (req, res,next) {
-	var quiz = modesls.Quiz.build({question: req.body.quiz.question,
+exports.create = function (req, res, next) {
+	var quiz = models.Quiz.build({question: req.body.quiz.question,
 									answer: req.body.quiz.answer } );
-
 //guarda en DB los campos pregunta y respuesta de quiz
 quiz.save({fields: ["question", "answer"]}).then(function(quiz){
+	req.flash('sucess', 'Quiz creado con éxito.');
 	res.redirect('/quizzes');
 })
-.catch(function(error) {next(error);
+.catch(function(error) {
+	req.flash('error', 'Error al crear un Quiz:' +error.message);
+	next(error);
 	});
+};
+
+//PUT /quizzes/:id
+exports.update= function(req, res, next){
+	req.quiz.question =req.body.quiz.question;
+	req.quiz.answer = req.body.quiz.answer;
+
+	req.quiz.save({fields: ["question", "answer"]}).then(function(quiz){
+	req.flash('sucess', 'Quiz editado con éxito.');
+	res.redirect('/quizzes');
+})
+.catch(Sequelize.ValidationError, function(error){
+	req.flash('error', 'Errores en el formulario:');
+	for(var i in error.errors){
+		req.flash('error', error.errors[i].value);
+	};
+	res.render('quizzes/edit', {quiz: req.quiz});
+})
+.catch(function(error) {
+	req.flash('error', 'Error al editar un Quiz:' +error.message);
+	next(error);
+	});
+};
+
+//GET / quizzes/:id/edit
+exports.edit = function(req, res, next) {
+	var quiz = req.quiz;
+	res.render('quizzes/edit', {quiz: quiz});
 };
