@@ -79,7 +79,7 @@ exports.update= function(req, res, next){
 	res.render('quizzes/edit', {quiz: req.quiz});
 })
 .catch(function(error) {
-	req.flash('error', 'Error al editar un Quiz:' +error.message);
+	req.flash('error', 'Error al crear un Quiz:' +error.message);
 	next(error);
 	});
 };
@@ -88,4 +88,17 @@ exports.update= function(req, res, next){
 exports.edit = function(req, res, next) {
 	var quiz = req.quiz;
 	res.render('quizzes/edit', {quiz: quiz});
+};
+
+//DELETE/ quizzes/:id
+exports.destroy = function(req, res, next) {
+	req.quiz.destroy()
+	.then(function(){
+		req.flash('sucess', 'Quiz borraso con exito.');
+		res.redirect('/quizzes');
+	})
+.catch(function(error) {
+	req.flash('error', 'Error al crear un Quiz:' +error.message);
+	next(error);
+	});
 };
