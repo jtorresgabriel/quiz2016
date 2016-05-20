@@ -15,7 +15,8 @@ router.get('/autor', function(req, res) {
 
 //Autoload de rutas que usen: quizId
 router.param('quizId', quizController.load);
-router.param('userId', quizController.load);
+router.param('userId', userController.load);
+
 
 router.get('/quizzes', quizController.index);
 router.get('/quizzes/:quizId(\\d+)', quizController.show);
