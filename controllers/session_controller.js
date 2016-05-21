@@ -21,6 +21,32 @@ exports.loginRequired = function (req, res, next){
 		}
 	};
 
+	exports.adminOrMyselfRequired = function (req, res, next){
+	var isAdmin = req.session.user.isAdmin;
+	var quizAuthorId = req.quiz.AuthorId;
+	var loggedUserId = req.session.user.id;
+
+	if (isAdmin || userId === loggedUserId){
+		next();
+	} else{ 
+		console.log('Ruta prohibida: no es el usuario logeado, ni un admin.');
+		res.send(403);
+	}
+};
+
+exports.adminAndNotMyselfRequired = function (req, res, next){
+	var isAdmin = req.session.user.isAdmin;
+	var quizAuthorId = req.quiz.AuthorId;
+	var loggedUserId = req.session.user.id;
+
+	if (isAdmin || userId !== loggedUserId){
+		next();
+	} else{ 
+		console.log('Ruta prohibida: no es el usuario logeado, ni un admin.');
+		res.send(403);
+	}
+};
+
 // GET /session -- Formulario de login
 exports.new = function(req, res, next) {
 	var redir = req.query.redir || url.parse(req.headers.refer || "/").pathname;
@@ -37,7 +63,7 @@ exports.create = function(req, res, next) {
 	authenticate(login, password)
 	.then(function(user) {
 		if (user) {
-			req.session.user = {id:user.id, username:user.username};
+			req.session.user = {id:user.id, username:user.username, isAdmin: user.isAdmin};
 			res.redirect(redir); // redirección a redir
 } else {
 	req.flash('error', 'La autenticación ha fallado. Reinténtelo otra vez.');
