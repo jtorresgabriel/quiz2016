@@ -8,14 +8,14 @@ module.exports = function(sequelize, DataTypes) {
 			unique: true,
 			validate: { notEmpty: { msg: "Falta username" }}
 		},
-		 password: {
-		 	type: DataTypes.STRING,
+		password: {
+			type: DataTypes.STRING,
 			validate: { notEmpty: {msg: "Falta password"}},
 			set: function (password) {
 				// String aleatorio usado como salt.
 				this.salt = Math.round((new Date().valueOf() * Math.random())) + '';
 				this.setDataValue('password', encryptPassword(password, this.salt));
-				}
+			}
 		},
 		salt: {
 			type: DataTypes.STRING
@@ -24,15 +24,14 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.BOOLEAN,
 			defaultValue: false
 		}
-	});	
-};
+	},
 
-/*
 { instanceMethods: {
-verifyPassword: function (password) {
-return encryptPassword(password, this.salt) === this.password;
-}
-}
+	verifyPassword: function (password) {
+		return encryptPassword(password, this.salt) === this.password;
+		}
+	}
+	
 });
 };
 /*
@@ -41,5 +40,5 @@ return encryptPassword(password, this.salt) === this.password;
 * y devuelve 40 caracteres hexadecimales.
 */
 function encryptPassword(password, salt) {
-return crypto.createHmac('sha1', salt).update(password).digest('hex');
+	return crypto.createHmac('sha1', salt).update(password).digest('hex');
 };
