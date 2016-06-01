@@ -13,6 +13,17 @@
     // view engine setup
     app.set('views', path.join(__dirname, 'views'));
     app.set('view engine', 'ejs');
+
+   if (app.get('.env') === 'production') {
+        app.use(function(req, res, next) {
+    if (req.headers['x-forwarded-proto'] !== 'https') {
+        res.redirect('https://' + req.get('Host') + req.url);
+            } else {
+        next() /* Continue to other routes if we're not redirecting */
+        }
+     });
+    }
+
     // uncomment after placing your favicon in /public
     app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
     app.use(logger('dev'));
