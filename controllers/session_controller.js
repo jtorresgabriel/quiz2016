@@ -2,6 +2,7 @@ var userController = require('./user_controller');
 var Sequelize = require('sequelize');
 var url = require ('url');
 var models =require ('../models');
+var timeout = 12000 //en ms
  
 var authenticate = function( login, password){
 	return models.User.findOne({where: {username: login }}).then(function(user){
@@ -63,7 +64,10 @@ exports.create = function(req, res, next) {
 	authenticate(login, password)
 	.then(function(user) {
 		if (user) {
-			req.session.user = {id:user.id, username:user.username, isAdmin: user.isAdmin};
+			req.session.user = {ịd:user.id, username: user.username};
+			var logoutTime = Date.now() + timeout;
+			req.session.user = {id:user.id, username:user.username,
+			 isAdmin: user.isAdmin, logoutTime: logoutTime};
 			res.redirect(redir); // redirección a redir
 } else {
 	req.flash('error', 'La autenticación ha fallado. Reinténtelo otra vez.');
@@ -79,4 +83,22 @@ exports.create = function(req, res, next) {
 exports.destroy = function(req, res, next) {
 	delete req.session.user;
 res.redirect("/session"); // redirect a login
+};
+
+//Autologout
+exports.autologout = function(req, res, next){
+	var date = new Date();
+	var time = date.getTime();
+	var sessionTime = 120000; 
+	if(req.session){
+		if(time - req.session.user.logoutTime > sessionTime){
+			delete req.session.user;
+			req.flash('info, Su sesion ha expirado')
+			res.redirect("/session");
+		}else{
+			req.session.user.logoutTime = new Date().getTime();
+		}
+	}else{
+	next();
+}
 };

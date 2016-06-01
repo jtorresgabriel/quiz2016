@@ -22,20 +22,20 @@ router.param('quizId', quizController.load); //quizId
 router.param('userId', userController.load); //userId
 router.param('commentId', commentController.load); //commentId
 
-router.get('/quizzes.:format?', quizController.index);
-router.get('/quizzes/:quizId(\\d+).:format?', quizController.show);
-router.get('/quizzes/:quizId(\\d+)/check', quizController.check);
-router.get('/quizzes/new', sessionController.loginRequired, quizController.new);
-router.post('/quizzes', sessionController.loginRequired, upload.single('image'), 
+router.get('/quizzes.:format?', sessionController.autologout, quizController.index);
+router.get('/quizzes/:quizId(\\d+).:format?', sessionController.autologout, quizController.show);
+router.get('/quizzes/:quizId(\\d+)/check', sessionController.autologout, quizController.check);
+router.get('/quizzes/new',  sessionController.autologout,sessionController.loginRequired, quizController.new);
+router.post('/quizzes', sessionController.autologout, sessionController.loginRequired, upload.single('image'), 
 										quizController.create);
-router.get('/quizzes/:quizId(\\d+)/edit', sessionController.loginRequired,
+router.get('/quizzes/:quizId(\\d+)/edit', sessionController.autologout, sessionController.loginRequired,
 											quizController.ownershipRequired,
 											quizController.edit);
-router.put('/quizzes/:quizId(\\d+)', sessionController.loginRequired,
+router.put('/quizzes/:quizId(\\d+)', sessionController.autologout, sessionController.loginRequired,
 										quizController.ownershipRequired,
 										upload.single('image'),
 									 	quizController.update);
-router.delete('/quizzes/:quizId(\\d+)', sessionController.loginRequired,
+router.delete('/quizzes/:quizId(\\d+)', sessionController.autologout, sessionController.loginRequired,
 											quizController.ownershipRequired,
 										 	quizController.destroy);
 
@@ -43,17 +43,17 @@ router.get('/quizzes/:quizId(\\d+)/comments/new', sessionController.loginRequire
 router.post('/quizzes/:quizId(\\d+)/comments', sessionController.loginRequired, commentController.create);
 router.post('/quizzes/:quizId(\\d+)/comments/:commentId(\\d+)/accept', sessionController.loginRequired, commentController.accept);
 
-router.get('/users', userController.index);
-router.get('/users/:userId(\\d+)', userController.show);
-router.get('/users/new', userController.new);
-router.post('/users', userController.create);
-router.get('/users/:userId(\\d+)/edit', sessionController.loginRequired, 
+router.get('/users', sessionController.autologout, userController.index);
+router.get('/users/:userId(\\d+)', sessionController.autologout, userController.show);
+router.get('/users/new', sessionController.autologout, userController.new);
+router.post('/users', sessionController.autologout, userController.create);
+router.get('/users/:userId(\\d+)/edit', sessionController.autologout, sessionController.loginRequired, 
 										sessionController.adminOrMyselfRequired,
 										userController.edit);
-router.get('/users/:userId(\\d+)/', sessionController.loginRequired, 
+router.get('/users/:userId(\\d+)/', sessionController.autologout, sessionController.loginRequired, 
 									sessionController.adminOrMyselfRequired,
 									userController.update);
-router.delete('/users/:userId(\\d+)/', sessionController.loginRequired, 
+router.delete('/users/:userId(\\d+)/', sessionController.autologout, sessionController.loginRequired, 
 										sessionController.adminAndNotMyselfRequired,
 										userController.destroy);
 

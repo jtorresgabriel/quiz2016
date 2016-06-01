@@ -9,10 +9,13 @@
     var flash = require('express-flash');
     var methodOverride = require('method-override');
     var routes = require('./routes/index');
+
     var app = express();
     // view engine setup
     app.set('views', path.join(__dirname, 'views'));
     app.set('view engine', 'ejs');
+
+   
 
    if (app.get('.env') === 'production') {
         app.use(function(req, res, next) {
