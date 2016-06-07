@@ -23,7 +23,8 @@
 	exports.create = function(req, res, next) {
 		var comment = models.Comment.build(
 			{ text: req.body.comment.text,
-				QuizId: req.quiz.id
+				QuizId: req.quiz.id, 
+				AuthorId: authorId
 			});
 		comment.save()
 		.then(function(comment) {

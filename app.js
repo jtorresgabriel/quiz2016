@@ -9,13 +9,11 @@
     var flash = require('express-flash');
     var methodOverride = require('method-override');
     var routes = require('./routes/index');
-
+    
     var app = express();
     // view engine setup
     app.set('views', path.join(__dirname, 'views'));
-    app.set('view engine', 'ejs');
-
-   
+    app.set('view engine', 'ejs');   
 
    if (app.get('.env') === 'production') {
         app.use(function(req, res, next) {
@@ -40,12 +38,27 @@
     app.use(express.static(path.join(__dirname, 'public')));
     app.use(partials());
     app.use(flash());
+
+
     // Helper dinamico:
     app.use(function(req, res, next) {
     // Hacer visible req.session en las vistas
     res.locals.session = req.session;
     next();
 });
+
+    app.use(function(req, res, next){
+        if (req.session.user){
+            if( req.session.user.expires - new Date().getTime() <=0){
+                delete req.session.user;
+            }else{
+                req.session.user.expires = new Date().getTime() + 120000;
+            };
+        };
+        next();
+    });
+
+
     app.use('/', routes);
     // catch 404 and forward to error handler
     app.use(function(req, res, next) {

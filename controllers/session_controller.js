@@ -64,10 +64,7 @@ exports.create = function(req, res, next) {
 	authenticate(login, password)
 	.then(function(user) {
 		if (user) {
-			req.session.user = {ịd:user.id, username: user.username};
-			var logoutTime = Date.now() + timeout;
-			req.session.user = {id:user.id, username:user.username,
-			 isAdmin: user.isAdmin, logoutTime: logoutTime};
+			req.session.user = {ịd:user.id, username: user.username, expires: new Date().getTime + 120000};
 			res.redirect(redir); // redirección a redir
 } else {
 	req.flash('error', 'La autenticación ha fallado. Reinténtelo otra vez.');
@@ -85,7 +82,7 @@ exports.destroy = function(req, res, next) {
 res.redirect("/session"); // redirect a login
 };
 
-//Autologout
+/*//Autologout
 exports.autologout = function(req, res, next){
 	var date = new Date();
 	var time = date.getTime();
@@ -102,3 +99,4 @@ exports.autologout = function(req, res, next){
 	next();
 }
 };
+*/
