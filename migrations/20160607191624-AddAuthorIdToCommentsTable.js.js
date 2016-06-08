@@ -2,11 +2,8 @@
 
 module.exports = {
   up: function (queryInterface, Sequelize) {
-    return queryInterface.addColumn( 'Comments',
-      'AuthorId',
-      { type: Sequelize.INTEGER,
-        defaultvalue: 0
-      }
+    return queryInterface.addColumn( 'Comments','AuthorId',
+      { type: Sequelize.INTEGER   }
       );
   },
 
